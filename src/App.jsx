@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import useStore from "./store/useStore";
 import { lightTheme, darkTheme } from "./theme";
@@ -37,7 +37,6 @@ export default function App() {
   const darkMode = useStore((s) => s.darkMode);
   const theme = darkMode ? darkTheme : lightTheme;
 
-  // Show modal if user has never accepted the terms
   const [modalOpen, setModalOpen] = useState(
     () => localStorage.getItem(TERMS_KEY) !== "true",
   );
@@ -47,8 +46,6 @@ export default function App() {
     setModalOpen(false);
   };
 
-  // On decline: just close — acceptance is NOT saved.
-  // The modal will reappear on next visit or login attempt.
   const handleDecline = () => {
     setModalOpen(false);
   };
@@ -63,9 +60,8 @@ export default function App() {
         onDecline={handleDecline}
       />
 
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
-          {/* Pass onRequireTerms so Login can re-open modal if terms weren't accepted */}
           <Route
             path="/login"
             element={<Login onRequireTerms={() => setModalOpen(true)} />}
@@ -79,10 +75,7 @@ export default function App() {
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/expenses" element={<Expenses />} />
                     <Route path="/expenses/add" element={<ExpenseForm />} />
-                    <Route
-                      path="/expenses/edit/:id"
-                      element={<ExpenseForm />}
-                    />
+                    <Route path="/expenses/edit/:id" element={<ExpenseForm />} />
                     <Route path="/income" element={<Income />} />
                     <Route path="/income/add" element={<IncomeForm />} />
                     <Route path="/income/edit/:id" element={<IncomeForm />} />
@@ -90,17 +83,14 @@ export default function App() {
                     <Route path="/debts/add" element={<DebtForm />} />
                     <Route path="/debts/edit/:id" element={<DebtForm />} />
                     <Route path="/profile" element={<Profile />} />
-                    <Route
-                      path="*"
-                      element={<Navigate to="/dashboard" replace />}
-                    />
+                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
                   </Routes>
                 </AppShell>
               </PrivateRoute>
             }
           />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
 
       <GlobalSnackbar />
     </ThemeProvider>
